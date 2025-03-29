@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions;
 
-namespace FrontierPioneers.Gameplay.Inventory
+namespace FrontierPioneers.Gameplay.InventorySystem
 {
     public class Inventory
     {
@@ -47,6 +48,17 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>True if given amount of item was added successfully; otherwise, false.</returns>
         public bool AddItem(ItemSO item, int count)
         {
+            if(item == null)
+            {
+                Debug.LogError("Trying to add null item to inventory.");
+                return false;
+            }
+            if(count <= 0)
+            {
+                Debug.LogError($"Trying to add non-positive ({count}) of {item} to inventory.");
+                return false;
+            }
+            
             if(!CanAddItem(item, count))
             {
                 Debug.Log($"Can't add {count} of {item} to inventory, it has only {GetItemCapacity(item)} space left.");
@@ -101,6 +113,17 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>True if given amount of item was removed successfully; otherwise, false.</returns>
         public bool RemoveItem(ItemSO item, int count)
         {
+            if(item == null)
+            {
+                Debug.LogError("Trying to remove null item from inventory.");
+                return false;
+            }
+            if(count <= 0)
+            {
+                Debug.LogError($"Trying to remove non-positive ({count}) of {item} to inventory.");
+                return false;
+            }
+            
             if(!HasItem(item, count))
             {
                 Debug.Log($"Can't remove {count} of {item} from inventory, it has only {GetItemCount(item)}.");
@@ -147,6 +170,17 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>True if given amount of item exists; otherwise, false.</returns>
         public bool HasItem(ItemSO item, int count)
         {
+            if(item == null)
+            {
+                Debug.LogError("Trying to check null item in inventory.");
+                return false;
+            }
+            if(count <= 0)
+            {
+                Debug.LogError($"Trying to check non-positive ({count}) of {item} to inventory.");
+                return false;
+            }
+            
             int amountInInventory = GetItemCount(item);
             return amountInInventory >= count;
         }
@@ -158,6 +192,11 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>Amount of space for this item.</returns>
         public int GetItemCapacity(ItemSO item)
         {
+            if(item == null)
+            {
+                Debug.LogError("Trying to check null item in inventory.");
+                return 0;
+            }
             int capacity = 0;
 
             foreach(var slot in _inventory)
@@ -183,6 +222,17 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>True if given amount can be added; otherwise, false.</returns>
         public bool CanAddItem(ItemSO item, int count)
         {
+            if(item == null)
+            {
+                Debug.LogError("Trying to check null item in inventory.");
+                return false;
+            }
+            if(count <= 0)
+            {
+                Debug.LogError($"Trying to check non-positive ({count}) of {item}.");
+                return false;
+            }
+            
             int roomInInventory = GetItemCapacity(item);
             return roomInInventory >= count;
         }
@@ -194,6 +244,11 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>Amount of this item currently in inventory.</returns>
         public int GetItemCount(ItemSO item)
         {
+            if(item == null)
+            {
+                Debug.LogError("Trying to check null item in inventory.");
+                return 0;
+            }
             int count = 0;
             foreach(var slot in _inventory)
             {
@@ -212,6 +267,11 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>Amount of item removed from inventory</returns>
         public int RemoveWholeItem(ItemSO item)
         {
+            if(item == null)
+            {
+                Debug.LogError("Trying to remove null item from inventory.");
+                return 0;
+            }
             int count = 0;
 
             foreach(var slot in _inventory)
@@ -234,7 +294,7 @@ namespace FrontierPioneers.Gameplay.Inventory
         /// <returns>
         /// Returns a dictionary of items and their quantities.
         /// </returns>
-        public Dictionary<ItemSO, int> GetItems()
+        public Dictionary<ItemSO, int> GetItemsAsDictionary()
         {
             var dict = new Dictionary<ItemSO, int>();
             foreach(var slot in _inventory.Where(slot => slot.Item != null))
@@ -251,28 +311,41 @@ namespace FrontierPioneers.Gameplay.Inventory
 
             return dict;
         }
+        
+        public List<InventorySlot> GetItemsAsList() => new List<InventorySlot>(_inventory);
 
-        private void SortInventory() => _inventory.Sort(
-            (slot1, slot2) =>
-            {
-                // +1  -> slot2 first
-                // 0  -> equal
-                // -1 -> slot1 first
-
-                if(slot1.Item == slot2.Item)
-                {
-                    return slot2.Quantity - slot1.Quantity;
-                }
-                else
-                {
-                    return slot1.Item.CompareTo(slot2.Item);
-                }
-            });
+        private void SortInventory()
+        {
+            _inventory.Sort(InventorySlot.InventorySlotComparison);
+        }
     }
     
     public class InventorySlot
     {
         public ItemSO Item { get; set; } = null;
         public int Quantity { get; set; } = 0;
+
+        public static int InventorySlotComparison(InventorySlot slot1, InventorySlot slot2)
+        {
+            // +1  -> slot2 first
+            // 0  -> equal
+            // -1 -> slot1 first
+            if(slot1.Item == null && slot2.Item == null)
+            {
+                return 0;
+            }
+            else if(slot1.Item == null && slot2.Item != null)
+            {
+                return 1;
+            }
+            else if(slot1.Item.Equals(slot2.Item))
+            {
+                return slot2.Quantity.CompareTo(slot1.Quantity);
+            }
+            else
+            {
+                return slot1.Item.CompareTo(slot2.Item);
+            }
+        }
     }
 }

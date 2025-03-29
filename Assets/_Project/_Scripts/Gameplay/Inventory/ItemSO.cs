@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace FrontierPioneers.Gameplay.Inventory
+namespace FrontierPioneers.Gameplay.InventorySystem
 {
     [CreateAssetMenu(fileName = "New Item", menuName = "FrontierPioneers/Item")]
     public class ItemSO : ScriptableObject, IComparable<ItemSO>
@@ -15,7 +15,7 @@ namespace FrontierPioneers.Gameplay.Inventory
         {
             if(ReferenceEquals(this, other)) return 0;
             if(other is null) return -1;
-            return -1 * String.Compare(name, other.name, StringComparison.Ordinal);
+            return String.Compare(name, other.name, StringComparison.Ordinal);
         }
     }
 }
