@@ -4,7 +4,7 @@ namespace FrontierPioneers.Gameplay.Resources.Visuals
 {
     public class RandomVisualDepletion : VisualDepletionBase
     {
-        const int MAX_ITERATIONS = 300;
+        const int MaxIterations = 300;
         
         public override void VisualDeplete(int count)
         {
@@ -16,7 +16,7 @@ namespace FrontierPioneers.Gameplay.Resources.Visuals
             
             int depletedCount = 0;
             int iterations = 0;
-            while(depletedCount < count && iterations < MAX_ITERATIONS)
+            while(depletedCount < count && iterations < MaxIterations)
             {
                 int randomIndex = UnityEngine.Random.Range(0, resourcePieces.Length);
                 if (resourcePieces[randomIndex].enabled)
