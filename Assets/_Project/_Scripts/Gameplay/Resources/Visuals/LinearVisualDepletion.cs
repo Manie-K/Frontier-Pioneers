@@ -9,7 +9,6 @@ namespace FrontierPioneers.Gameplay.Resources.Visuals
             if (count < 0 || count > resourcePieces.Length || count > VisibleResourcePiecesCount)
             {
                 throw new ArgumentException($"Invalid count value -> {count}");
-                return;
             }
             
             for (int i = 0; i < count; i++)

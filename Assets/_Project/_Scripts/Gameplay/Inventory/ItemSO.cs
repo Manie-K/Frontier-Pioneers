@@ -6,9 +6,9 @@ namespace FrontierPioneers.Gameplay.InventorySystem
     [CreateAssetMenu(fileName = "New Item", menuName = "FrontierPioneers/Item")]
     public class ItemSO : ScriptableObject, IComparable<ItemSO>
     {
-        public new string name;
-        public Sprite sprite;
-        public GameObject prefab;
+        public new string name = "New Item";
+        public Sprite sprite = null;
+        public GameObject prefab = null;
         public int stackSize = 1;
 
         public int CompareTo(ItemSO other)
@@ -16,6 +16,11 @@ namespace FrontierPioneers.Gameplay.InventorySystem
             if(ReferenceEquals(this, other)) return 0;
             if(other is null) return -1;
             return String.Compare(name, other.name, StringComparison.Ordinal);
+        }
+        
+        public override string ToString()
+        {
+            return name;
         }
     }
 }

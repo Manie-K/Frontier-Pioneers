@@ -58,5 +58,20 @@ namespace Tests
 
             Assert.Greater(result, 0);
         }
+
+        [Test]
+        public void ToString_ReturnsDefaultNameOnNewItem()
+        {
+            var item = ScriptableObject.CreateInstance<ItemSO>();
+            Assert.AreEqual("New Item", item.ToString());
+        }
+
+        [Test]
+        public void ToString_ReturnsCorrectName()
+        {
+            var item = ScriptableObject.CreateInstance<ItemSO>();
+            item.name = "Test Item";
+            Assert.AreEqual("Test Item", item.ToString());
+        }
     }
 }

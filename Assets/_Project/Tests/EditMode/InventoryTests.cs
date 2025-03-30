@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using FrontierPioneers.Gameplay.InventorySystem;
 using NUnit.Framework;
+using UnityEngine.TestTools;
 
 namespace Tests
 {
@@ -32,6 +33,27 @@ namespace Tests
         }
 
         //TODO: Tests for GetItemCount, GetItemCapacity, AddItem with capacity, RemoveItem with count etc.
+
+        [Test]
+        public void AddItem_AddingNonPositiveOfItem()
+        {
+            LogAssert.Expect(LogType.Error, $"Trying to add non-positive (-1) of {_goldItem} to inventory.");
+            bool result1 = _inventory.AddItem(_goldItem, -1);
+            
+            LogAssert.Expect(LogType.Error, $"Trying to add non-positive (0) of {_goldItem} to inventory.");
+            bool result2 = _inventory.AddItem(_goldItem, 0);
+            
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+        }
+        
+        [Test]
+        public void AddItem_AddingNullItem()
+        {
+            bool result = _inventory.AddItem(null, 1);
+            LogAssert.Expect(LogType.Error, "Trying to add null item to inventory.");
+            Assert.IsFalse(result);
+        }
         
         [Test]
         public void AddItem_AddsItemCorrectly()
@@ -41,6 +63,113 @@ namespace Tests
             Assert.AreEqual(_inventory.GetItemCount(_goldItem), 3);
         }
 
+        [Test]
+        public void AddItem_AddsToCorrectSlots()
+        {
+            _inventory.AddItem(_goldItem, 3);
+            
+            List<InventorySlot> inventorySlots1 = _inventory.GetItemsAsList();
+            
+            Assert.AreEqual(inventorySlots1[0].Item, _goldItem);
+            Assert.AreEqual(inventorySlots1[0].Quantity, 3);
+            Assert.AreEqual(inventorySlots1[1].Item, null);
+            Assert.AreEqual(inventorySlots1[1].Quantity, 0);
+            
+            _inventory.AddItem(_goldItem, 3);
+            List<InventorySlot> inventorySlots2 = _inventory.GetItemsAsList();
+            
+            Assert.AreEqual(inventorySlots2[0].Item, _goldItem);
+            Assert.AreEqual(inventorySlots2[0].Quantity, 5);
+            Assert.AreEqual(inventorySlots2[1].Item, _goldItem);
+            Assert.AreEqual(inventorySlots2[1].Quantity, 1);
+        }
+
+        [Test]
+        public void RemoveItem_SetsSlotToNullAndLowerQuantityInAnother()
+        {
+            _inventory.AddItem(_goldItem, 15);
+            
+            List<InventorySlot> inventorySlots1 = _inventory.GetItemsAsList();
+            
+            bool result = _inventory.RemoveItem(_goldItem, 7);
+            
+            List<InventorySlot> inventorySlots2 = _inventory.GetItemsAsList();
+            
+            Assert.AreEqual(inventorySlots1[0].Item, _goldItem);
+            Assert.AreEqual(inventorySlots1[1].Item, _goldItem);
+            Assert.AreEqual(inventorySlots1[2].Item, _goldItem);
+            Assert.AreEqual(inventorySlots1[0].Quantity, 5);
+            Assert.AreEqual(inventorySlots1[1].Quantity, 5);
+            Assert.AreEqual(inventorySlots1[2].Quantity, 5);
+            
+            Assert.IsTrue(result);
+            Assert.AreEqual(inventorySlots2[0].Item, _goldItem);
+            Assert.AreEqual(inventorySlots2[1].Item, _goldItem);
+            Assert.AreEqual(inventorySlots2[2].Item, null);
+            Assert.AreEqual(inventorySlots2[0].Quantity, 5);
+            Assert.AreEqual(inventorySlots2[1].Quantity, 3);
+            Assert.AreEqual(inventorySlots2[2].Quantity, 0);
+        }
+        
+        [Test]
+        public void RemoveItem_SetsSlotToNullWhenRemovingWholeSlot()
+        {
+            _inventory.AddItem(_goldItem, 10);
+            
+            List<InventorySlot> inventorySlots1 = _inventory.GetItemsAsList();
+            Assert.AreEqual(inventorySlots1[0].Item, _goldItem);
+            Assert.AreEqual(inventorySlots1[0].Quantity, 5);
+            
+            Assert.AreEqual(inventorySlots1[1].Item, _goldItem);
+            Assert.AreEqual(inventorySlots1[1].Quantity, 5);
+            
+            bool result = _inventory.RemoveItem(_goldItem, 5);
+            List<InventorySlot> inventorySlots2 = _inventory.GetItemsAsList();
+            
+            Assert.IsTrue(result);
+            Assert.AreEqual(inventorySlots2[0].Item, _goldItem);
+            Assert.AreEqual(inventorySlots2[0].Quantity, 5);
+            Assert.AreEqual(inventorySlots2[1].Item, null);
+            Assert.AreEqual(inventorySlots2[1].Quantity, 0);
+        }
+        
+        [Test]
+        public void RemoveItem_DoesntRemoveNonPositiveOfItem()
+        {
+            LogAssert.Expect(LogType.Error, $"Trying to remove non-positive (-1) of {_goldItem} to inventory.");
+            bool result1 = _inventory.RemoveItem(_goldItem, -1);
+            
+            LogAssert.Expect(LogType.Error, $"Trying to remove non-positive (0) of {_goldItem} to inventory.");
+            bool result2 = _inventory.RemoveItem(_goldItem, 0);
+            
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+        }
+        
+        [Test]
+        public void RemoveItem_DoesntRemoveNullItem()
+        {
+            LogAssert.Expect(LogType.Error, $"Trying to remove null item from inventory.");
+            bool result = _inventory.RemoveItem(null, 1);
+            Assert.IsFalse(result);
+        }
+        
+        [Test]
+        public void RemoveItem_SortsInventoryCorrectly()
+        {
+            _inventory.AddItem(_goldItem, 5);
+            _inventory.AddItem(_appleItem, 30);
+            _inventory.AddItem(_swordItem, 1);
+            
+            List<InventorySlot> inventorySlots1 = _inventory.GetItemsAsList();
+            
+            _inventory.RemoveItem(_appleItem, 10);
+            List<InventorySlot> inventorySlots2 = _inventory.GetItemsAsList();
+            
+            Assert.AreNotEqual(inventorySlots1[^1].Item, null);
+            Assert.AreEqual(inventorySlots2[^1].Item, null);
+        }
+        
         [Test]
         public void RemoveItem_RemovesItemCorrectly()
         {
@@ -59,6 +188,44 @@ namespace Tests
             Assert.AreEqual(_inventory.GetItemCount(_goldItem), 2);
         }
 
+        [Test]
+        public void CanAddItem_ReturnsFalseWhenCountIsNonPositive()
+        {
+            LogAssert.Expect(LogType.Error, $"Trying to check non-positive (-1) of {_goldItem}.");
+            bool result1 = _inventory.CanAddItem(_goldItem, -1);
+            
+            LogAssert.Expect(LogType.Error, $"Trying to check non-positive (0) of {_goldItem}.");
+            bool result2 = _inventory.CanAddItem(_goldItem, 0);
+            
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+        }
+        
+        [Test] 
+        public void CanAddItem_ReturnsFalseWhenItemCannotBeAdded()
+        {
+            _inventory.AddItem(_swordItem, 4);
+            _inventory.AddItem(_appleItem, 1);
+            bool result = _inventory.CanAddItem(_goldItem, 1);
+            Assert.IsFalse(result);
+        }
+        
+        [Test]
+        public void CanAddItem_ReturnsTrueWhenItemCanBeAdded()
+        {
+            _inventory.AddItem(_goldItem, 5);
+            bool result = _inventory.CanAddItem(_goldItem, 3);
+            Assert.IsTrue(result);
+        }
+        
+        [Test]
+        public void CanAddItem_ReturnsFalseWhenNull()
+        {
+            LogAssert.Expect(LogType.Error, "Trying to check null item in inventory.");
+            bool result = _inventory.CanAddItem(null, 5);
+            Assert.IsFalse(result);
+        }
+        
         [Test]
         public void HasItem_ReturnsTrueIfEnoughOfItemExists()
         {
@@ -83,6 +250,90 @@ namespace Tests
         }
         
         [Test]
+        public void HasItem_ReturnsFalseIfCountIsNonPositive()
+        {
+            _inventory.AddItem(_goldItem, 1);
+            
+            LogAssert.Expect(LogType.Error, $"Trying to check non-positive (-1) of {_goldItem} to inventory.");
+            bool result1 = _inventory.HasItem(_goldItem, -1);
+            
+            LogAssert.Expect(LogType.Error, $"Trying to check non-positive (0) of {_goldItem} to inventory.");
+            bool result2 = _inventory.HasItem(_goldItem, 0);
+            
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+        }
+        
+        [Test]
+        public void HasItem_ReturnsFalseIfItemIsNull()
+        {
+            LogAssert.Expect(LogType.Error, "Trying to check null item in inventory.");
+            bool result = _inventory.HasItem(null, 0);
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void GetItemCapacity_ReturnsCorrectValueWhenItemExistsWithFullSlot()
+        {
+            _inventory.AddItem(_goldItem, 10);
+            _inventory.AddItem(_swordItem, 1);
+            _inventory.AddItem(_appleItem, 10);
+            
+            int count = _inventory.GetItemCapacity(_appleItem);
+            Assert.AreEqual(count, 10);
+        }
+        
+        [Test]
+        public void GetItemCapacity_ReturnsCorrectValueWhenItemExistsWithoutFullSlot()
+        {
+            _inventory.AddItem(_goldItem, 10);
+            _inventory.AddItem(_swordItem, 1);
+            _inventory.AddItem(_appleItem, 1);
+            
+            int count = _inventory.GetItemCapacity(_appleItem);
+            Assert.AreEqual(count, 19);
+        }
+        
+        [Test]
+        public void GetItemCapacity_ReturnsCorrectValueWhenItemDoesntExist()
+        {
+            _inventory.AddItem(_goldItem, 10);
+            _inventory.AddItem(_swordItem, 1);
+            
+            int count = _inventory.GetItemCapacity(_appleItem);
+            Assert.AreEqual(count, 20);
+        }
+        
+        [Test]
+        public void GetItemCapacity_ReturnsZeroIfItemIsNull()
+        {
+            LogAssert.Expect(LogType.Error, "Trying to check null item in inventory.");
+            int count = _inventory.GetItemCapacity(null);
+            Assert.AreEqual(count, 0);
+        }
+        
+        [Test]
+        public void GetItemCount_ReturnsZeroIfItemIsNull()
+        {
+            LogAssert.Expect(LogType.Error, "Trying to check null item in inventory.");
+            int count = _inventory.GetItemCount(null);
+            Assert.AreEqual(count, 0);
+        }
+        
+        [Test]
+        public void GetItemCount_ReturnsZeroIfItemDoesNotExist()
+        {
+            int count = _inventory.GetItemCount(_goldItem);
+            Assert.AreEqual(count, 0);
+            
+            _inventory.AddItem(_goldItem, 5);
+            _inventory.AddItem(_swordItem, 5);
+            
+            int count2 = _inventory.GetItemCount(_appleItem);
+            Assert.AreEqual(count2, 0);
+        }
+        
+        [Test]
         public void GetItemCount_ReturnsCorrectCount()
         {
             _inventory.AddItem(_goldItem, 6);
@@ -91,6 +342,14 @@ namespace Tests
             Assert.AreEqual(count, 10);
         }
 
+        [Test]
+        public void RemoveWholeItem_DoesntRemoveNullItem()
+        {
+            LogAssert.Expect(LogType.Error, "Trying to remove whole of null item from inventory.");
+            int removedCount = _inventory.RemoveWholeItem(null);
+            Assert.AreEqual(removedCount, 0);
+        }
+        
         [Test]
         public void RemoveWholeItem_RemovesAllOfOnlyThisItem()
         {
@@ -147,6 +406,19 @@ namespace Tests
                 Assert.AreEqual(slot.Quantity, 0);
             }
         }
+
+        [Test]
+        public void GetItemsAsList_CreatesNewListAndSlots()
+        {
+            _inventory.AddItem(_goldItem, 5);
+            List<InventorySlot> inventorySlots1 = _inventory.GetItemsAsList();
+
+            _inventory.AddItem(_goldItem, 5);
+            List<InventorySlot> inventorySlots2 = _inventory.GetItemsAsList();
+            
+            Assert.AreEqual(inventorySlots1[1].Item, null);
+            Assert.AreEqual(inventorySlots2[1].Item, _goldItem);
+        }
         
         [Test]
         public void SortInventory_NullShouldBeLast()
@@ -164,7 +436,7 @@ namespace Tests
         }
 
         [Test]
-        public void SortInventory_SameItemSOHigherQuantityShouldBeFirst()
+        public void SortInventory_SameItemHigherQuantityShouldBeFirst()
         {
             _inventory.AddItem(_goldItem, 8); //Stack size is 5
             
@@ -176,7 +448,7 @@ namespace Tests
         }
         
         [Test]
-        public void SortInventory_SameItemSOShouldBeNextToEachOther()
+        public void SortInventory_SameItemShouldBeNextToEachOther()
         {
             _inventory.AddItem(_goldItem, 9); //Stack size is 5
             _inventory.AddItem(_appleItem, 7); //Apple should be first, because Apple is alphabetically first than Gold

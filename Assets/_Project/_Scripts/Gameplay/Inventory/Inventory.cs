@@ -269,7 +269,7 @@ namespace FrontierPioneers.Gameplay.InventorySystem
         {
             if(item == null)
             {
-                Debug.LogError("Trying to remove null item from inventory.");
+                Debug.LogError("Trying to remove whole of null item from inventory.");
                 return 0;
             }
             int count = 0;
@@ -311,8 +311,17 @@ namespace FrontierPioneers.Gameplay.InventorySystem
 
             return dict;
         }
-        
-        public List<InventorySlot> GetItemsAsList() => new List<InventorySlot>(_inventory);
+
+        public List<InventorySlot> GetItemsAsList()
+        {
+            List<InventorySlot> slots = new List<InventorySlot>(_capacity);
+            for(int i = 0; i < _capacity; i++)
+            {
+                slots.Add(new InventorySlot(_inventory[i].Item, _inventory[i].Quantity));
+            }
+            
+            return slots;
+        }
 
         private void SortInventory()
         {
@@ -322,9 +331,19 @@ namespace FrontierPioneers.Gameplay.InventorySystem
     
     public class InventorySlot
     {
-        public ItemSO Item { get; set; } = null;
-        public int Quantity { get; set; } = 0;
+        public ItemSO Item { get; set; }
+        public int Quantity { get; set; }
 
+        public InventorySlot()
+        {
+            Item = null;
+            Quantity = 0;
+        }
+        public InventorySlot(ItemSO item, int quantity)
+        {
+            Item = item;
+            Quantity = quantity;
+        }
         public static int InventorySlotComparison(InventorySlot slot1, InventorySlot slot2)
         {
             // +1  -> slot2 first
