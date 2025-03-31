@@ -1,7 +1,10 @@
 {
-    "name": "Gameplay",
-    "rootNamespace": "FrontierPioneers.Gameplay",
-    "references": ["GUID:62bf75f7ea60ed24281958bd2704001e"],
+    "name": "Editor",
+    "rootNamespace": "FrontierPioneers.Editor",
+    "references": [
+        "GUID:62bf75f7ea60ed24281958bd2704001e",
+        "GUID:437ef5b01f4404c4181cf4ad3bf581e7"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

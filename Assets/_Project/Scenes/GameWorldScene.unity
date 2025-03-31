@@ -778,7 +778,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e267b0750ee489a43adbd20a184e9fc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceNodeConfig: {fileID: 0}
+  resourceNodeConfig: {fileID: 11400000, guid: a220c1eb17eef2349b743e36b0a99d91, type: 2}
+  basicResource: {fileID: 0}
+  basicResourceStartingAmount: 0
+  basicResourceAmountPerGather: 0
+  basicResourceAmountLeft: 0
+  specialResource: {fileID: 0}
+  specialResourceStartingAmount: 0
+  specialResourceAmountPerGather: 0
+  specialResourceAmountLeft: 0
 --- !u!114 &1815132518
 MonoBehaviour:
   m_ObjectHideFlags: 0

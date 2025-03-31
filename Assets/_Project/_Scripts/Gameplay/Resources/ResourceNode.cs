@@ -1,25 +1,36 @@
 using System;
+using FrontierPioneers.Core.Helpers;
 using FrontierPioneers.Gameplay.InventorySystem;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 namespace FrontierPioneers.Gameplay.Resources
 {
     public class ResourceNode : MonoBehaviour, IGatherable
     {
+        [Space(1)]
         [SerializeField] ResourceNodeConfigSO resourceNodeConfig;       
-
+        
         // Basic resource
-        ItemSO _basicResource;
-        int _basicResourceStartingAmount;
-        int _basicResourceAmountPerGather;
-        int _basicResourceAmountLeft;
+        [Space(5)]
+        [Header("Basic Resource")]
+        [Space(2)]
+        [SerializeField][ReadOnly]ItemSO basicResource;
+        
+        [SerializeField][ReadOnly]int basicResourceStartingAmount;
+        [SerializeField][ReadOnly]int basicResourceAmountPerGather;
+        [SerializeField][ReadOnly]int basicResourceAmountLeft;
         
         // Special resource
-        ItemSO _specialResource;
-        int _specialResourceStartingAmount;
-        int _specialResourceAmountPerGather;
-        int _specialResourceAmountLeft;
+        [Space(5)]
+        [Header("Special Resource")]
+        [Space(2)]
+        [SerializeField][ReadOnly]ItemSO specialResource;
+        
+        [SerializeField][ReadOnly]int specialResourceStartingAmount;
+        [SerializeField][ReadOnly]int specialResourceAmountPerGather;
+        [SerializeField][ReadOnly]int specialResourceAmountLeft;
 
         public event Action<float> OnSpecialResourceCollected;
 
@@ -28,16 +39,16 @@ namespace FrontierPioneers.Gameplay.Resources
         {
             Assert.IsNotNull(resourceNodeConfig, "Resource node doesn't have a config.");
             
-            _basicResource = resourceNodeConfig.basicResource;
-            _specialResource = resourceNodeConfig.specialResource;
+            basicResource = resourceNodeConfig.basicResource;
+            specialResource = resourceNodeConfig.specialResource;
             
-            _basicResourceStartingAmount = resourceNodeConfig.basicResourceAmountPerGather;
-            _specialResourceStartingAmount = resourceNodeConfig.specialResourceAmountPerGather;
+            basicResourceAmountPerGather = resourceNodeConfig.basicResourceAmountPerGather;
+            specialResourceAmountPerGather = resourceNodeConfig.specialResourceAmountPerGather;
             
-            _basicResourceAmountLeft = _basicResourceStartingAmount = resourceNodeConfig.basicResourceAmount;
-            _specialResourceAmountLeft = _specialResourceStartingAmount = resourceNodeConfig.specialResourceAmount;
+            basicResourceAmountLeft = basicResourceStartingAmount = resourceNodeConfig.basicResourceAmount;
+            specialResourceAmountLeft = specialResourceStartingAmount = resourceNodeConfig.specialResourceAmount;
             
-            Assert.IsNotNull(_basicResource, "Basic resource wasn't set.");
+            Assert.IsNotNull(basicResource, "Basic resource wasn't set.");
         }
         
         public void Gather(Gatherer gatherer)
@@ -54,38 +65,38 @@ namespace FrontierPioneers.Gameplay.Resources
                 throw new NullReferenceException("Gatherer inventory is null");
             }
             
-            if (_basicResourceAmountLeft > 0)
+            if (basicResourceAmountLeft > 0)
             {
-                int amountToGather = _basicResourceAmountPerGather * gatherer.BasicMiningEfficiency;
-                amountToGather = Math.Min(amountToGather, _basicResourceAmountLeft); //Resource node restriction
-                amountToGather = Math.Min(amountToGather, gathererInventory.GetItemCapacity(_basicResource)); //Gatherer restriction
+                int amountToGather = basicResourceAmountPerGather * gatherer.BasicMiningEfficiency;
+                amountToGather = Math.Min(amountToGather, basicResourceAmountLeft); //Resource node restriction
+                amountToGather = Math.Min(amountToGather, gathererInventory.GetItemCapacity(basicResource)); //Gatherer restriction
                 
-                _basicResourceAmountLeft -= amountToGather;
-                bool added = gathererInventory.AddItem(_basicResource, amountToGather); 
+                basicResourceAmountLeft -= amountToGather;
+                bool added = gathererInventory.AddItem(basicResource, amountToGather); 
                 if(!added)
                 {
-                    throw new ArgumentException($"Couldn't add {amountToGather} of {_basicResource} to gatherer's inventory}}");
+                    throw new ArgumentException($"Couldn't add {amountToGather} of {basicResource} to gatherer's inventory}}");
                 }
             }
 
-            if(_specialResource != null && _specialResourceAmountLeft > 0)
+            if(specialResource != null && specialResourceAmountLeft > 0)
             {
-                int amountToGather = _specialResourceAmountPerGather * gatherer.SpecialMiningEfficiency;
-                amountToGather = Math.Min(amountToGather, _specialResourceAmountLeft); //Resource node restriction
-                amountToGather = Math.Min(amountToGather, gathererInventory.GetItemCapacity(_specialResource)); //Gatherer restriction            
+                int amountToGather = specialResourceAmountPerGather * gatherer.SpecialMiningEfficiency;
+                amountToGather = Math.Min(amountToGather, specialResourceAmountLeft); //Resource node restriction
+                amountToGather = Math.Min(amountToGather, gathererInventory.GetItemCapacity(specialResource)); //Gatherer restriction            
                 
-                _specialResourceAmountLeft -= amountToGather;
-                bool added = gathererInventory.AddItem(_specialResource, amountToGather); 
+                specialResourceAmountLeft -= amountToGather;
+                bool added = gathererInventory.AddItem(specialResource, amountToGather); 
                 if(!added)
                 {
-                    throw new ArgumentException($"Couldn't add {amountToGather} of {_specialResource} to gatherer's inventory}}");
+                    throw new ArgumentException($"Couldn't add {amountToGather} of {specialResource} to gatherer's inventory}}");
                 }
                 
-                float currentSpecialResourcePercentage = _specialResourceAmountLeft / (float)_specialResourceStartingAmount;
+                float currentSpecialResourcePercentage = specialResourceAmountLeft / (float)specialResourceStartingAmount;
                 OnSpecialResourceCollected?.Invoke(currentSpecialResourcePercentage);
             }
             
-            if(_basicResourceAmountLeft <= 0 && (_specialResourceAmountLeft <= 0 || _specialResource == null))
+            if(basicResourceAmountLeft <= 0 && (specialResourceAmountLeft <= 0 || specialResource == null))
             {
                 DepleteNode();
             }

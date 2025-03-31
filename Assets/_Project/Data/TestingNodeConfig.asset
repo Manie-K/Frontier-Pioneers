@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bed6c224ea740469f410e2393b810c0, type: 3}
+  m_Name: TestingNodeConfig
+  m_EditorClassIdentifier: 
+  basicResource: {fileID: 11400000, guid: acb14f7bef23edb409359a76d0837b2b, type: 2}
+  basicResourceAmount: 75
+  basicResourceAmountPerGather: 10
+  specialResource: {fileID: 11400000, guid: 407be267c5429bb41b1b5ef854d265bb, type: 2}
+  specialResourceAmount: 25
+  specialResourceAmountPerGather: 3
