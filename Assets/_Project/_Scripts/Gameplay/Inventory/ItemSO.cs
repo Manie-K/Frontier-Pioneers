@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace FrontierPioneers.Gameplay.InventorySystem
 {
+    /// <summary>
+    /// It defines an item in the game. It contains the item's name, sprite, prefab, and inventory stack size.
+    /// </summary>
     [CreateAssetMenu(fileName = "New Item", menuName = "FrontierPioneers/Item")]
     public class ItemSO : ScriptableObject, IComparable<ItemSO>
     {
