@@ -7,6 +7,7 @@ namespace FrontierPioneers.Gameplay.Resources
     {
         public int AllResourcePiecesCount => _resourcePieces.Length;
         public int VisibleResourcePiecesCount => Array.FindAll(_resourcePieces, x => x.enabled).Length;
+        public float CurrentPercentage => (float)VisibleResourcePiecesCount / AllResourcePiecesCount;
         
         MeshRenderer[] _resourcePieces;
         float _onePiecePercentage;

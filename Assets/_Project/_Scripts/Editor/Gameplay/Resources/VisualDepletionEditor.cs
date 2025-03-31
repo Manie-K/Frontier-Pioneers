@@ -14,6 +14,10 @@ namespace FrontierPioneers.Editor.Gameplay.Resources
             EditorGUILayout.LabelField("Hierarchy note!" , EditorStyles.boldLabel);
             EditorGUILayout.LabelField("First child of this object ('chunks') should have mineral mesh renderers as children.");
             EditorGUILayout.LabelField("Parent of this object should be a resource node.");
+
+            VisualDepletion script = (VisualDepletion)target;
+            EditorGUILayout.Space(1);
+            EditorGUILayout.FloatField("Current visible pieces [%]: ", script.CurrentPercentage * 100f);
         }
     }
 }
