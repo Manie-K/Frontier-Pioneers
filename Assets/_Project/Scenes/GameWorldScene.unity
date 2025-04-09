@@ -703,7 +703,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1252516968528969134, guid: 572a3b2af9cb46444ad38c409ce7bd62, type: 3}
       propertyPath: m_Name
-      value: Resource Node Mock
+      value: Resource Node
       objectReference: {fileID: 0}
     - target: {fileID: 1838846527869103013, guid: 572a3b2af9cb46444ad38c409ce7bd62, type: 3}
       propertyPath: m_LocalPosition.x

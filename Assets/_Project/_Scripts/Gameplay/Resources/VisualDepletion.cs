@@ -33,7 +33,7 @@ namespace FrontierPioneers.Gameplay.Resources
             transform.parent.GetComponent<ResourceNode>().OnSpecialResourceCollected -= SetVisualPercentage;
         }
 
-        void SetVisualPercentage(float percentage)
+        public void SetVisualPercentage(float percentage)
         {
             if (percentage is < 0f or > 1f)
             {
