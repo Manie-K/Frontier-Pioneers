@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace FrontierPioneers.Core.StateMachine
@@ -35,9 +36,10 @@ namespace FrontierPioneers.Core.StateMachine
         StateNode _currentStateNode;
         
         /// <summary>
-        /// The current state of the state machine.
+        /// The current <see cref="IState"/> (nullable) state of the state machine.
         /// </summary>
-        public IState CurrentState => _currentStateNode.State;
+        [CanBeNull]
+        public IState CurrentState => _currentStateNode?.State;
         
         /// <summary>
         /// Needs to be called every Update.

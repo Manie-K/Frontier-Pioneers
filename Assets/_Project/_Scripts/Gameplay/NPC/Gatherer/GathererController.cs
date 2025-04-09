@@ -1,12 +1,12 @@
 ﻿using FrontierPioneers.Gameplay.InventorySystem;
 using UnityEngine;
 
-namespace FrontierPioneers.Gameplay.Resources
+namespace FrontierPioneers.Gameplay.NPC.Gatherer
 {
-    public class Gatherer : MonoBehaviour
+    public class GathererController : MonoBehaviour
     {
         public int BasicMiningEfficiency { get; private set; } = 1;
         public int SpecialMiningEfficiency { get; private set; } = 1;
-        public Inventory Inventory { get; private set; }
+        public Inventory Inventory { get; private set; }   
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using FrontierPioneers.Core.Helpers;
 using FrontierPioneers.Gameplay.InventorySystem;
+using FrontierPioneers.Gameplay.NPC.Gatherer;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
@@ -51,7 +52,7 @@ namespace FrontierPioneers.Gameplay.Resources
             Assert.IsNotNull(basicResource, "Basic resource wasn't set.");
         }
         
-        public void Gather(Gatherer gatherer)
+        public void Gather(GathererController gatherer)
         {
             if(_toBeDeleted) return;
             if (gatherer == null)

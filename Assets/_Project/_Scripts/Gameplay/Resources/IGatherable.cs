@@ -1,7 +1,9 @@
-﻿namespace FrontierPioneers.Gameplay.Resources
+﻿using FrontierPioneers.Gameplay.NPC.Gatherer;
+
+namespace FrontierPioneers.Gameplay.Resources
 {
     public interface IGatherable
     {
-        public void Gather(Gatherer gatherer);
+        public void Gather(GathererController gatherer);
     }
 }

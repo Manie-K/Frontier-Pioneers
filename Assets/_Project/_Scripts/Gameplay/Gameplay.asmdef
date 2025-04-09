@@ -1,7 +1,10 @@
 {
     "name": "Gameplay",
     "rootNamespace": "FrontierPioneers.Gameplay",
-    "references": ["GUID:62bf75f7ea60ed24281958bd2704001e"],
+    "references": [
+        "GUID:62bf75f7ea60ed24281958bd2704001e",
+        "GUID:b9ade9c6b600ffb4a97496af7cac4421"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
