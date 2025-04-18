@@ -289,6 +289,20 @@ namespace FrontierPioneers.Gameplay.InventorySystem
         }
 
         /// <summary>
+        /// Sets all slots in inventory to null.
+        /// </summary>
+        public void Clear()
+        {
+            for(int i = 0; i < _capacity; i++)
+            {
+                _inventory[i].Item = null;
+                _inventory[i].Quantity = 0;
+            }
+            
+            OnInventoryChanged?.Invoke();
+        }
+        
+        /// <summary>
         /// Returns all items in inventory.
         /// </summary>
         /// <returns>
