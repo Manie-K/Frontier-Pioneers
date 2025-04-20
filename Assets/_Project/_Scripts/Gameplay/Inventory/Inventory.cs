@@ -302,6 +302,8 @@ namespace FrontierPioneers.Gameplay.InventorySystem
             OnInventoryChanged?.Invoke();
         }
         
+        public bool IsEmpty => _inventory.All(slot => slot.Item == null);
+        
         /// <summary>
         /// Returns all items in inventory.
         /// </summary>
@@ -326,6 +328,12 @@ namespace FrontierPioneers.Gameplay.InventorySystem
             return dict;
         }
 
+        /// <summary>
+        /// Returns all slots from inventory.
+        /// </summary>
+        /// <returns>
+        /// Returns list of slots.
+        /// </returns>
         public List<InventorySlot> GetItemsAsList()
         {
             List<InventorySlot> slots = new List<InventorySlot>(_capacity);

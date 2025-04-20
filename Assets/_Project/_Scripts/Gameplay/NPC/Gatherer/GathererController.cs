@@ -16,6 +16,7 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
         public int SpecialMiningEfficiency { get; private set; } = 1;
 
         public event Action OnMiningFinished;
+        public event Action OnUnloadingFinished;
         
         Coroutine _gatherCoroutine;
         
@@ -30,6 +31,11 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
         /// </summary>
         /// <param name="gatherable">Defines which resource are checked.</param>
         public bool HasInventorySpace(IGatherable gatherable) => gatherable.CanGather(this);
+        
+        /// <summary>
+        /// ! To only be called from the GathererBrain !
+        /// </summary>
+        public void StartUnloading() => StopCoroutine(UnloadCoroutine());
         
         /// <summary>
         /// ! To only be called from the GathererBrain !
@@ -61,6 +67,29 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
                 yield return new WaitForSeconds(gatheringInterval);
             }
             OnMiningFinished?.Invoke();
+        }
+
+        IEnumerator UnloadCoroutine()
+        {
+            int tries = 0;
+            while(!Inventory.IsEmpty)
+            {
+                var slot = Inventory.GetItemsAsList()[0];
+                ItemSO item = slot.Item;
+                int quantity = slot.Quantity;
+                
+                Workplace.Storage.InputInventory.AddItem(item, quantity);
+                Inventory.RemoveItem(item, quantity);
+                
+                tries++;
+                yield return new WaitForSeconds(1f);
+
+                if(tries >= 100)
+                {
+                    Debug.LogError($"Unloading for {tries} attempts, is everything okay?");
+                }
+            }
+            OnUnloadingFinished?.Invoke();
         }
     }
 }
