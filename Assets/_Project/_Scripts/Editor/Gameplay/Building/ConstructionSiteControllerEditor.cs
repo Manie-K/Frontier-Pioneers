@@ -9,7 +9,7 @@ namespace FrontierPioneers.Editor.Gameplay.Building
     {
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            DrawDefaultInspector();
             EditorGUILayout.Separator();
             
             ConstructionSiteController script = (ConstructionSiteController)target;

@@ -9,7 +9,7 @@ namespace FrontierPioneers.Editor.Gameplay.Resources
     {
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            DrawDefaultInspector();
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Hierarchy note!", EditorStyles.boldLabel);
