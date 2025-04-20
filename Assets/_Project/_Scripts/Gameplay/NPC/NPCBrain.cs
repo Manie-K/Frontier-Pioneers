@@ -14,6 +14,7 @@ namespace FrontierPioneers.Gameplay.NPC
     {
         protected readonly StateMachine stateMachine = new();
         protected NavMeshAgent navMeshAgent;
+        protected NPCController npcController;
         
         [CanBeNull] public IState CurrentState => stateMachine.CurrentState;
         protected virtual void Start()
@@ -22,6 +23,11 @@ namespace FrontierPioneers.Gameplay.NPC
             if (navMeshAgent == null)
             {
                 Debug.LogError($"NPCBrain: {gameObject.name} does not have a NavMeshAgent component.");
+            }
+            npcController = GetComponent<NPCController>();
+            if (npcController == null)
+            {
+                Debug.LogError($"NPCBrain: {gameObject.name} does not have a NPCController component.");
             }
             
             ConfigureStateMachine();

@@ -12,10 +12,11 @@ namespace FrontierPioneers.Gameplay.Resources
         [SerializeField] GameObject cursor2;
         [SerializeField] bool drawColliders_DEBUG;
 
-        public event Action<IGatherable> OnResourceSelected;
+        public List<IGatherable> SelectedResources => _selectedResources;
+        public event Action<IGatherable> OnResourceSelected; //To signal single resource selection, for visual purpose etc.
         public event Action<IGatherable> OnResourceDeselected;
-        public event Action OnSelectedResourcesChanged;
-
+        public event Action OnSelectedResourcesChanged; //To signal that the collection has changed, use it for monitoring.
+        
         //TODO: Add global view manager to handle this
         public event Action OnResourceViewEnter;
         public event Action OnResourceViewExit;
@@ -105,6 +106,7 @@ namespace FrontierPioneers.Gameplay.Resources
                     {
                         if(_selectedResources.Contains(gatherable))
                         {
+                            gatherable.OnGatherableDepleted -= OnGatherableDepleted_Delegate;
                             _selectedResources.Remove(gatherable);
                             OnResourceDeselected?.Invoke(gatherable);
                         }
@@ -113,13 +115,22 @@ namespace FrontierPioneers.Gameplay.Resources
                     {
                         if(!_selectedResources.Contains(gatherable))
                         {
+                            gatherable.OnGatherableDepleted += OnGatherableDepleted_Delegate;
                             _selectedResources.Add(gatherable);
                             OnResourceSelected?.Invoke(gatherable);
                         }
                     }
-
-                    OnSelectedResourcesChanged?.Invoke();
                 }
+            }
+            OnSelectedResourcesChanged?.Invoke();
+        }
+
+        void OnGatherableDepleted_Delegate(IGatherable gatherable)
+        {
+            if(_selectedResources.Contains(gatherable))
+            {
+                _selectedResources.Remove(gatherable);
+                OnSelectedResourcesChanged?.Invoke();
             }
         }
     }

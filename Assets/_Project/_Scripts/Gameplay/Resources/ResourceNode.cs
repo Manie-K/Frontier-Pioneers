@@ -34,6 +34,7 @@ namespace FrontierPioneers.Gameplay.Resources
         [SerializeField][ReadOnly]int specialResourceAmountLeft;
 
         public event Action<float> OnSpecialResourceCollected;
+        public event Action<IGatherable> OnGatherableDepleted;
 
         bool _toBeDeleted = false;
         void Awake()
@@ -51,7 +52,11 @@ namespace FrontierPioneers.Gameplay.Resources
             
             Assert.IsNotNull(basicResource, "Basic resource wasn't set.");
         }
-        
+
+        public bool CanGather(GathererController gatherer) =>
+            gatherer.Inventory.GetItemCapacity(basicResource) > 0 || 
+            (specialResource != null && gatherer.Inventory.GetItemCapacity(specialResource) > 0);
+
         public void Gather(GathererController gatherer)
         {
             if(_toBeDeleted) return;
@@ -103,10 +108,12 @@ namespace FrontierPioneers.Gameplay.Resources
             }
         }
 
+
         void DepleteNode()
         {
             _toBeDeleted = true;
             Debug.Log("This node is depleted");
+            OnGatherableDepleted?.Invoke(this);
             //TODO: Play particle system
             //TODO: Remove it from the world
         }
