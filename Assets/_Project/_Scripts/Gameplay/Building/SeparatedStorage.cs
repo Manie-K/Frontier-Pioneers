@@ -3,21 +3,21 @@ using UnityEngine;
 
 namespace FrontierPioneers.Gameplay.Building
 {
+    /// <summary>
+    /// This is <see cref="IStorage"/> storage that has two separate <see cref="Inventory"/> inventories, one for input and one for output.
+    /// </summary>
     public class SeparatedStorage : MonoBehaviour, IStorage
     {
         [SerializeField] int inputInventoryCapacity = 10;
         [SerializeField] int outputInventoryCapacity = 10;
         
-        public Inventory InputInventory => _inputInventory;
-        public Inventory OutputInventory => _outputInventory;
-        
-        Inventory _inputInventory;
-        Inventory _outputInventory;
-        
+        public Inventory InputInventory { get; private set; }
+        public Inventory OutputInventory { get; private set; }
+
         void Awake()
         {
-            _inputInventory = new Inventory(inputInventoryCapacity);
-            _outputInventory = new Inventory(outputInventoryCapacity);
+            InputInventory = new Inventory(inputInventoryCapacity);
+            OutputInventory = new Inventory(outputInventoryCapacity);
         }
     }
 }
