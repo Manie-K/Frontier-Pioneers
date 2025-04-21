@@ -13,7 +13,7 @@ namespace FrontierPioneers.Gameplay.NPC.Builder
         Animator _animator;
         ConstructionSiteController _currentSite;
 
-        public event Action OnCurrentConstructionSiteChanged;
+        //public event Action OnCurrentConstructionSiteChanged;
         
         void Awake()
         {
@@ -48,7 +48,7 @@ namespace FrontierPioneers.Gameplay.NPC.Builder
 
         protected override void ConfigureStateMachine()
         {
-            var idleState = new IdleState(_animator);
+            var idleState = new BuilderIdleState(_animator, this, 120);
             var walkingToWorkplaceState = new StaticWalkState(_animator, navMeshAgent, () =>
                 _controller.Workplace.transform.position);
             var walkingToBuildingState = new StaticWalkState(_animator, navMeshAgent, () =>
@@ -61,12 +61,14 @@ namespace FrontierPioneers.Gameplay.NPC.Builder
                 ));
             
             stateMachine.AddTransition(walkingToBuildingState, buildingState, new FuncPredicate(() =>
-                    walkingToBuildingState.HasReachedDestination(2f)
+                    walkingToBuildingState.HasReachedDestination(3f)
                 ));
             
-            stateMachine.AddTransition(walkingToBuildingState, idleState,
-                new EventPredicate("OnCurrentConstructionSiteChanged",this));
+            //stateMachine.AddTransition(walkingToBuildingState, idleState,
+              //  new EventPredicate("OnCurrentConstructionSiteChanged",this));
             
+            stateMachine.AddTransition(walkingToBuildingState, idleState, new FuncPredicate((() => _currentSite == null)));
+              
             stateMachine.AddTransition(idleState, walkingToBuildingState, new FuncPredicate(()=>
                     _currentSite != null && !_currentSite.Equals(null)
                 ));
@@ -76,7 +78,9 @@ namespace FrontierPioneers.Gameplay.NPC.Builder
             ));
             
             stateMachine.AddTransition(buildingState, idleState, new EventPredicate("OnConstructionFinished", _controller));
-            stateMachine.AddTransition(buildingState, idleState, new EventPredicate("OnCurrentConstructionSiteChanged", this));
+            
+            //stateMachine.AddTransition(buildingState, idleState, new EventPredicate("OnCurrentConstructionSiteChanged", this));
+            stateMachine.AddTransition(buildingState, idleState, new FuncPredicate((() => _currentSite == null)));
             
             stateMachine.SetInitialState(idleState);
         }
@@ -86,14 +90,24 @@ namespace FrontierPioneers.Gameplay.NPC.Builder
             float constructionTime = _currentSite.CurrentStage.buildTime;
             _controller.StartConstruction(_currentSite, constructionTime);
         }
-        public void StopConstructionCoroutine() => _controller.StopConstruction();
-        
+
+        public void StopConstructionCoroutine()
+        {
+            _controller.StopConstruction();
+            _currentSite = null;
+        }
+
+        public void FetchAvailableConstructionSites()
+        {
+            if(_currentSite != null) return; //Shouldn't be even possible, but just in case
+            _currentSite = ConstructionSiteManager.Instance.RequestConstructionSite(_controller);
+        }
         void CheckIfOurSiteIsStillAvailable(ConstructionSiteController site) //When site is paused or deregistered
         {
             if(site == _currentSite)
             {
                 _currentSite = null;
-                OnCurrentConstructionSiteChanged?.Invoke();
+                //OnCurrentConstructionSiteChanged?.Invoke();
             }
         }
         

@@ -12,6 +12,6 @@ namespace FrontierPioneers.Gameplay.NPC
         /// <summary>
         /// Checks if the NPC position is next to its workplace.
         /// </summary>
-        public bool IsNextToWorkplace() => Vector3.Distance(transform.position, Workplace.transform.position) <= 2f;
+        public bool IsNextToWorkplace() => Vector3.Distance(transform.position, Workplace.transform.position) <= 3f;
     }
 }

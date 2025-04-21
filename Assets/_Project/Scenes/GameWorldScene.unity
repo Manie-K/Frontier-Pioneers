@@ -1297,7 +1297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryCapacity: 10
   workplace: {fileID: 1406924656}
-  constructionParticles: {fileID: 0}
+  constructionParticlesPrefab: {fileID: 1606383871829246823, guid: b028dea08f1663e46811e48202882c82, type: 3}
 --- !u!195 &1605041543
 NavMeshAgent:
   m_ObjectHideFlags: 0

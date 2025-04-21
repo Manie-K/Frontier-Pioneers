@@ -3,6 +3,7 @@ using System.Collections;
 using FrontierPioneers.Gameplay.Building;
 using FrontierPioneers.Gameplay.InventorySystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace FrontierPioneers.Gameplay.NPC.Builder
 {
@@ -10,7 +11,7 @@ namespace FrontierPioneers.Gameplay.NPC.Builder
     {
         [SerializeField] int inventoryCapacity = 10;
         [SerializeField] BuildingController workplace;
-        [SerializeField] ParticleSystem constructionParticles;
+        [SerializeField] ParticleSystem constructionParticlesPrefab;
 
         public event Action OnConstructionFinished; 
         
@@ -40,15 +41,20 @@ namespace FrontierPioneers.Gameplay.NPC.Builder
         /// </summary>
         public void StopConstruction()
         {
-            if(_constructionCoroutine != null)
-                StopCoroutine(_constructionCoroutine);
+            StopCoroutine(_constructionCoroutine);
+            _constructionCoroutine = null;
         }
 
         IEnumerator ConstructionCoroutine(ConstructionSiteController site, float constructionTime)
         {
-            constructionParticles?.Play();
+            var particles = Instantiate(constructionParticlesPrefab, transform);
+            particles.Play();
+            
             yield return new WaitForSeconds(constructionTime);
-            constructionParticles?.Stop();
+            
+            particles.Stop();
+            Destroy(particles);
+            
             site.ConstructNextStage();
             OnConstructionFinished?.Invoke();
         }

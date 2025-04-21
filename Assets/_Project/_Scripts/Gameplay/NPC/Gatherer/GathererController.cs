@@ -22,8 +22,6 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
         public event Action OnUnloadingFinished;
         
         Coroutine _gatherCoroutine;
-        
-        
         void Awake()
         {
             Inventory = new Inventory(inventoryCapacity);
@@ -57,7 +55,6 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
         /// </summary>
         public void StopGathering()
         {
-            if(_gatherCoroutine == null) return;
             StopCoroutine(_gatherCoroutine);
             _gatherCoroutine = null;
         }
@@ -71,6 +68,8 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
                 currentGatherable.Gather(this);
                 yield return new WaitForSeconds(gatheringInterval);
             }
+
+            _gatherCoroutine = null;
             OnMiningFinished?.Invoke();
         }
 

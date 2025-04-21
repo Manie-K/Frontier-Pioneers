@@ -40,7 +40,7 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
         {
             var gatheringState = new GatheringState(_animator, this);
             var unloadingState = new UnloadingState(_animator, this);
-            var idleState = new IdleState(_animator);
+            var idleState = new BasicIdleState(_animator);
             var walkingToResourceState = new StaticWalkState(_animator, navMeshAgent, () =>
                 ((MonoBehaviour)_currentGatherable).transform.position);
             var walkingToWorkplaceState = new StaticWalkState(_animator, navMeshAgent, () =>

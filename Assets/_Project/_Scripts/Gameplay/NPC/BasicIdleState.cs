@@ -2,11 +2,11 @@
 
 namespace FrontierPioneers.Gameplay.NPC
 {
-    public class IdleState : BaseState
+    public class BasicIdleState : BaseState
     {
         const string AnimationName = "Idle";
         
-        public IdleState(Animator animator) : base("IdleState", animator){}
+        public BasicIdleState(Animator animator) : base("IdleState", animator){}
 
         public override void OnEnter()
         {

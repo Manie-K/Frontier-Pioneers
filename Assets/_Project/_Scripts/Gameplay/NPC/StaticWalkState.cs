@@ -25,8 +25,7 @@ namespace FrontierPioneers.Gameplay.NPC
             _navMeshAgent.SetDestination(_getTargetPositionFunc());
         }
         
-        public bool HasReachedDestination(float distance) => _navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance
-                                && !_navMeshAgent.pathPending && 
+        public bool HasReachedDestination(float distance) => (_navMeshAgent.velocity.magnitude <= 0.01f || !_navMeshAgent.pathPending) && 
                                 Vector3.Distance(_navMeshAgent.gameObject.transform.position, _getTargetPositionFunc()) <= distance;
     }
 }

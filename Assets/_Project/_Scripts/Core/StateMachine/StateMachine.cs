@@ -146,7 +146,7 @@ namespace FrontierPioneers.Core.StateMachine
         {
             if (_currentStateNode?.State == newState)
                 return;
-
+            
             _currentStateNode?.State?.OnExit();
             _currentStateNode = _stateNodes[newState.Id];
             _currentStateNode?.State?.OnEnter();
