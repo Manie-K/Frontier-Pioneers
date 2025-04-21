@@ -113,16 +113,15 @@ namespace FrontierPioneers.Gameplay.Building
                 {
                     return;
                 }
-            }
-
-            ConstructionSiteManager.Instance.DeregisterConstructionSite(this);
+            }//All requirements are met
+            ConstructionSiteManager.Instance.RegisterConstructionSite(this);
         }
 
         public void Debug_FillStockpile()
         {
             constructionStages[_currentStageIndex].requirements
                                                   .ForEach(r => _stockpile.AddItem(r.item, r.amount));
-            ConstructionSiteManager.Instance.DeregisterConstructionSite(this);
+            ConstructionSiteManager.Instance.RegisterConstructionSite(this);
         }
     }
 }

@@ -63,7 +63,6 @@ namespace FrontierPioneers.Gameplay.Building
                     _position, _currentRotation, constructionSitesTransform);
                 
                 _buildingViewEnabled = false;
-                ConstructionSiteManager.Instance.RegisterConstructionSite(placed);
             }
             else if(IsConstructionValid()) {
                 Graphics.DrawMesh(_mesh, _position, _currentRotation, buildingAllowedMaterial, 0);
