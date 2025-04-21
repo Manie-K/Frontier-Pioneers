@@ -10,6 +10,9 @@ namespace FrontierPioneers.Gameplay.Resources
         [SerializeField] LayerMask resourceLayerMask;
         [SerializeField] GameObject cursor1;
         [SerializeField] GameObject cursor2;
+        [SerializeField] GameObject areaVisual;
+        [SerializeField] Material selectingMaterial;
+        [SerializeField] Material deselectingMaterial;
         [SerializeField] bool drawColliders_DEBUG;
 
         public List<IGatherable> SelectedResources => _selectedResources;
@@ -46,23 +49,36 @@ namespace FrontierPioneers.Gameplay.Resources
 
             if(!_isViewActive) return;
 
-            if(Input.GetMouseButtonDown(0))
             {
-                _mouseInitialPosition = CameraController.Instance.GetWorldMousePosition();
-                cursor1.transform.position = _mouseInitialPosition;
-                _deselecting = false;
+                bool isDeselecting = false;
+                if(Input.GetMouseButtonDown(0) || (isDeselecting = Input.GetMouseButtonDown(1)))
+                {
+                    _mouseInitialPosition = CameraController.Instance.GetWorldMousePosition();
+                    cursor1.transform.position = _mouseInitialPosition;
+                    _deselecting = false;
+                    areaVisual.SetActive(true);
+                    areaVisual.GetComponent<MeshRenderer>().material = selectingMaterial;
+                    cursor1.SetActive(true);
+                    cursor2.SetActive(true);
+                    _deselecting = isDeselecting;
+                    areaVisual.GetComponent<MeshRenderer>().material =
+                        isDeselecting ? deselectingMaterial : selectingMaterial;
+                }
             }
 
-            if(Input.GetMouseButtonDown(1))
-            {
-                _mouseInitialPosition = CameraController.Instance.GetWorldMousePosition();
-                cursor1.transform.position = _mouseInitialPosition;
-                _deselecting = true;
-            }
-
-            if(Input.GetMouseButton(0))
+            if(Input.GetMouseButton(0) || Input.GetMouseButton(1))
             {
                 cursor2.transform.position = CameraController.Instance.GetWorldMousePosition();
+                Vector3 start = _mouseInitialPosition;
+                Vector3 end = cursor2.transform.position;
+                
+                Vector3 center = (start + end) / 2f;
+                Vector3 size = new Vector3(Mathf.Abs(end.x - start.x), 1, Mathf.Abs(end.z - start.z));
+
+                areaVisual.transform.position = center.With(y: 0.25f);
+                areaVisual.transform.rotation = Quaternion.Euler(0, 0, 0);
+                //Since Unity's plane is 10x10, we divide size by 10
+                areaVisual.transform.localScale = new Vector3(size.x / 10f, 1, size.z / 10f);
             }
 
             if(Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
@@ -71,6 +87,9 @@ namespace FrontierPioneers.Gameplay.Resources
                 cursor2.transform.position = _mouseFinalPosition;
                 CalculateAreaSelection();
                 _deselecting = false;
+                areaVisual.SetActive(false);
+                cursor1.SetActive(false);
+                cursor2.SetActive(false);
             }
         }
 
