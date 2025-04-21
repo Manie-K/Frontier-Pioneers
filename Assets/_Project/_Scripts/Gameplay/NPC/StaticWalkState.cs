@@ -24,8 +24,14 @@ namespace FrontierPioneers.Gameplay.NPC
             PlayAnimation(Animator.StringToHash(AnimationName));
             _navMeshAgent.SetDestination(_getTargetPositionFunc());
         }
-        
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            _navMeshAgent.ResetPath();
+        }
+
         public bool HasReachedDestination(float distance) => (_navMeshAgent.velocity.magnitude <= 0.01f || !_navMeshAgent.pathPending) && 
-                                Vector3.Distance(_navMeshAgent.gameObject.transform.position, _getTargetPositionFunc()) <= distance;
+                                                             Vector3.Distance(_navMeshAgent.gameObject.transform.position, _getTargetPositionFunc()) <= distance;
     }
 }
