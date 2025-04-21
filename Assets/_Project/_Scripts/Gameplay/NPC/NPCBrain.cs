@@ -31,7 +31,11 @@ namespace FrontierPioneers.Gameplay.NPC
             }
             
             ConfigureStateMachine();
-            NPCManager.Instance?.RegisterNPC(this);
+            if(!NPCManager.Instance)
+            {
+                Debug.LogError($"NPCManager singleton doesn't exist in the scene.");
+            }
+            NPCManager.Instance.RegisterNPC(this);
         }
 
         protected virtual void OnDestroy()

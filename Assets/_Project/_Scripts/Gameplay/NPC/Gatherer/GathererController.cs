@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using FrontierPioneers.Gameplay.Building;
 using FrontierPioneers.Gameplay.InventorySystem;
 using FrontierPioneers.Gameplay.Resources;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
         [SerializeField] private int inventoryCapacity = 10;
         [SerializeField] private float gatheringInterval = 4f;
         [SerializeField] private int gatheringIntervalsPerSession = 5;
+        //Temporary 
+        [SerializeField] private BuildingController workplace;
         public int BasicMiningEfficiency { get; private set; } = 1;
         public int SpecialMiningEfficiency { get; private set; } = 1;
 
@@ -24,18 +27,25 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
         void Awake()
         {
             Inventory = new Inventory(inventoryCapacity);
+            Workplace = workplace;
         }
 
         /// <summary>
-        /// Checks if the gatherer has enough space in its inventory to gather the resources.
+        /// Checks if the gatherer position is next to the workplace.
         /// </summary>
-        /// <param name="gatherable">Defines which resource are checked.</param>
-        public bool HasInventorySpace(IGatherable gatherable) => gatherable.CanGather(this);
+        public bool IsNextToWorkplace() => Vector3.Distance(transform.position, Workplace.transform.position) <= 2f;
+        
+        /// <summary>
+        /// Checks if the gatherer has enough space in its inventory to gather the resources.
+        /// If the gatherable is null, it will return true.
+        /// </summary>
+        /// <param name="gatherable">Defines which resource are checked, nullable.</param>
+        public bool HasInventorySpace(IGatherable gatherable) => gatherable?.CanGather(this) ?? true;
         
         /// <summary>
         /// ! To only be called from the GathererBrain !
         /// </summary>
-        public void StartUnloading() => StopCoroutine(UnloadCoroutine());
+        public void StartUnloading() => StartCoroutine(UnloadCoroutine());
         
         /// <summary>
         /// ! To only be called from the GathererBrain !

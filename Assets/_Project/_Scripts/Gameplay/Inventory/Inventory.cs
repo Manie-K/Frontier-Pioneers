@@ -302,6 +302,9 @@ namespace FrontierPioneers.Gameplay.InventorySystem
             OnInventoryChanged?.Invoke();
         }
         
+        /// <summary>
+        /// Checks if all slots' items are set as null.
+        /// </summary>
         public bool IsEmpty => _inventory.All(slot => slot.Item == null);
         
         /// <summary>

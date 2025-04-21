@@ -370,6 +370,22 @@ namespace Tests
             Assert.AreEqual(_inventory.GetItemCount(_goldItem), 0);
             Assert.AreEqual(_inventory.GetItemCount(_appleItem), 0);
         }
+
+        [Test]
+        public void IsEmpty_InitialInventoryIsEmpty()
+        {
+            Assert.IsTrue(_inventory.IsEmpty);
+        }
+        [Test]
+        public void IsEmpty_InventoryIsEmptyAfterRemovingAllItems()
+        {
+            _inventory.AddItem(_goldItem, 5);
+            _inventory.AddItem(_appleItem, 3);
+            _inventory.RemoveWholeItem(_goldItem);
+            _inventory.RemoveItem(_appleItem, 3);
+            Assert.IsTrue(_inventory.IsEmpty);
+        }
+        
         
         [Test]
         public void GetItemsAsDictionary_NonEmptyInventory()

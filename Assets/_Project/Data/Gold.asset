@@ -15,4 +15,4 @@ MonoBehaviour:
   name: Gold
   sprite: {fileID: 0}
   prefab: {fileID: 0}
-  stackSize: 10
+  stackSize: 12
