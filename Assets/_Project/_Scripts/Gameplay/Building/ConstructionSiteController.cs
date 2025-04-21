@@ -19,8 +19,6 @@ namespace FrontierPioneers.Gameplay.Building
         public BoxCollider FinishedBuildingCollider => finalBuildingCollider;
         public Mesh FinishedBuildingMesh => finalBuildingMesh;
 
-        public static Action<ConstructionSiteController> OnConstructionStageAvailable;
-
         Inventory _stockpile;
         int _currentStageIndex = 0;
 
@@ -84,6 +82,7 @@ namespace FrontierPioneers.Gameplay.Building
             }
 
             _currentStageIndex++;
+            ConstructionSiteManager.Instance.DeregisterConstructionSite(this);
         }
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace FrontierPioneers.Gameplay.Building
         {
             Instantiate(finalBuilding, transform.position, transform.rotation,
                 ConstructionSiteManager.Instance.BuildingsParent);
-            ConstructionSiteManager.Instance.UnregisterConstructionSite(this);
+            ConstructionSiteManager.Instance.DeregisterConstructionSite(this);
             if(Application.isEditor) DestroyImmediate(gameObject);
             else Destroy(gameObject);
         }
@@ -116,14 +115,14 @@ namespace FrontierPioneers.Gameplay.Building
                 }
             }
 
-            OnConstructionStageAvailable?.Invoke(this);
+            ConstructionSiteManager.Instance.DeregisterConstructionSite(this);
         }
 
         public void Debug_FillStockpile()
         {
             constructionStages[_currentStageIndex].requirements
                                                   .ForEach(r => _stockpile.AddItem(r.item, r.amount));
-            OnConstructionStageAvailable?.Invoke(this);
+            ConstructionSiteManager.Instance.DeregisterConstructionSite(this);
         }
     }
 }

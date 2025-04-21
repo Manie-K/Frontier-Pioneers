@@ -29,11 +29,6 @@ namespace FrontierPioneers.Gameplay.NPC.Gatherer
             Inventory = new Inventory(inventoryCapacity);
             Workplace = workplace;
         }
-
-        /// <summary>
-        /// Checks if the gatherer position is next to the workplace.
-        /// </summary>
-        public bool IsNextToWorkplace() => Vector3.Distance(transform.position, Workplace.transform.position) <= 2f;
         
         /// <summary>
         /// Checks if the gatherer has enough space in its inventory to gather the resources.
